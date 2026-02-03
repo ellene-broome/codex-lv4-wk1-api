@@ -1,0 +1,24 @@
+{
+  "name": "codex-lv4-wk1-api",
+  "version": "1.0.0",
+  "description": "Level 4 Codex Academy week 1 project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ellene-broome/codex-lv4-wk1-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ellene-broome/codex-lv4-wk1-api/issues"
+  },
+  "homepage": "https://github.com/ellene-broome/codex-lv4-wk1-api#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "helmet": "^8.1.0"
+  }
+}
