@@ -47,4 +47,9 @@ Returns a welcome message.
 Returns a list of example posts
 ### GET/users
 Returns a list of example users
+### GET/items
+Returns the list of items from the date source
+
+### POST/items
+Adds a new item to the list
 

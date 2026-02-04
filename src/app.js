@@ -1,24 +1,21 @@
-// import express to create a basic API
-// import helmet for security
-const express = require("express");
-const helmet = require("helmet");
+import express from "express";
+import helmet from "helmet";
+import items from "./data.js";
 
 // app is now the "server"
 const app = express();
 
-// use helmet middleware for security best practices
-// use express.json middleware to parse JSON request bodies
+// middleware
 app.use(helmet());
 app.use(express.json());
 
-// root route located at "/" 3000/
+// root route
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to ContentHub API" });
 });
 
-// Day 1: imitate a public API (example routes)
-// GET /posts - returns a list of posts located at /posts
-// GET /users - returns a list of users located at /users
+// Day 1 routes
+
 app.get("/posts", (req, res) => {
   res.json([
     { id: 1, title: "Hello World", author: "Alice" },
@@ -31,9 +28,28 @@ app.get("/users", (req, res) => {
     { id: 1, name: "Alice" },
     { id: 2, name: "Bob" },
   ]);
+});   
+
+// Day 2 routes
+
+app.get("/items", (req, res) => {
+  res.json(items);
 });
 
-// export the app for use in server.js and testing
-// allows other files to import the app
-export default app;
+app.post("/items", (req, res) => {
+  const newItem = req.body;
 
+  const newId = items.length + 1;
+
+  const itemWithId = {
+    id: newId,
+    ...newItem,
+  };
+
+  items.push(itemWithId);
+
+  res.status(201).json(itemWithId);
+});
+
+// export app
+export default app;

@@ -1,5 +1,6 @@
 {
   "name": "codex-lv4-wk1-api",
+  "type":"module",
   "version": "1.0.0",
   "description": "Level 4 Codex Academy week 1 project",
   "main": "src/server.js",
