@@ -1,55 +1,97 @@
-# Codex Level 4 — Week 1: ContentHub API
+# ContentHub API (Level 4 — Week 1)
 
-A simple Express API built for Codex Academy Level 4, Week 1.
-This project practices building REST-style routes, using correct status codes,
-and returning JSON like a public API.
+A simple Express.js API built for Codex Academy Level 4.
 
----
-
-## Tech Used
-- Node.js
-- Express
-- Helmet
-- Vitest + Supertest (tests)
+This project practices:
+- Building REST-style routes
+- Using middleware
+- Handling GET and POST requests
+- Returning JSON responses
+- Testing with Postman
 
 ---
 
-## Setup
+## 🚀 Tech Used
 
-### 1) Clone the repo
+- Node.js  
+- Express  
+- Helmet  
+- Postman  
+- Vitest + Supertest  
+
+---
+
+## 📂 Project Structure
+
+```
+src/
+app.js
+server.js
+data.js
+tests/
+```
+
+---
+
+## ⚙️ Setup
+
+Clone the repo:
 
 ```bash
 git clone https://github.com/ellene-broome/codex-lv4-wk1-api.git
 cd codex-lv4-wk1-api
 ```
-### 2) Install dependencies
-```bash
+Install dependencies:
 npm install
 ```
-### Run the Server
-```bash
-npm start
-```
-### Dev mode - auto-start
-```bash
-npm run dev
+Run the server:
+node src/server.js
 ```
 Server runs on:
-- http://localhost:3000
-### Run Tests
-```bash
-npm test
 ```
-### Routes (Wk1 Day 1)
-### GET/
-Returns a welcome message.
-### GET/posts
-Returns a list of example posts
-### GET/users
-Returns a list of example users
-### GET/items
-Returns the list of items from the date source
+http://localhost:3000
+```
+## 📌 Routes
+### GET /
 
-### POST/items
-Adds a new item to the list
+Returns welcome message.
 
+### GET /posts
+
+Returns sample posts.
+
+### GET /users
+
+Returns sample users.
+
+### GET /items
+
+Returns list of items.
+
+### POST /items
+
+Creates a new item.
+
+Example body:
+{
+  "name": "marker"
+}
+
+Success response (201):
+{
+  "id": 7,
+  "name": "marker"
+}
+
+Error response (400):
+{
+  "error": "Name is required"
+}
+
+## 🧪 Testing
+
+All routes tested using Postman.
+
+Tests included with Vitest + Supertest.
+
+---

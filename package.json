@@ -1,15 +1,15 @@
 {
   "name": "codex-lv4-wk1-api",
-  "type":"module",
+  "type": "module",
   "version": "1.0.0",
   "description": "Level 4 Codex Academy week 1 project",
   "main": "src/server.js",
   "scripts": {
-  "start": "node src/server.js",
-  "dev": "nodemon src/server.js",
-  "test": "vitest"
-},
-"repository": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "vitest"
+  },
+  "repository": {
     "type": "git",
     "url": "git+https://github.com/ellene-broome/codex-lv4-wk1-api.git"
   },
@@ -23,5 +23,8 @@
   "dependencies": {
     "express": "^5.2.1",
     "helmet": "^8.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
   }
 }
