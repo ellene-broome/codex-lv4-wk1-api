@@ -11,6 +11,18 @@ const app = express();
 app.use(helmet());
 app.use(express.json());
 
+// request timing log extra credit
+app.use((req, res, next) => {
+  const start = Date.now();
+
+  res.on("finish", () => {
+    const duration = Date.now() - start;
+    console.log(`${req.method} ${req.originalUrl} - ${duration}ms`);
+  });
+
+  next();
+});
+
 // root route
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to ContentHub API" });
@@ -68,6 +80,8 @@ app.use((err, req, res) => {
 
   res.status(status).json({ error: message });
 });
+
+
 
 
 
