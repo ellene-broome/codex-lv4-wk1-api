@@ -1,3 +1,5 @@
+
+// app.js
 import express from "express";
 import helmet from "helmet";
 import items from "./data.js";
@@ -33,23 +35,31 @@ app.get("/users", (req, res) => {
 // Day 2 routes
 
 app.get("/items", (req, res) => {
-  res.json(items);
+   res.status(200).json(items);
 });
 
 app.post("/items", (req, res) => {
-  const newItem = req.body;
+  const { name } = req.body || {};
+
+  // validation (Day 3 style)
+  if (!name) {
+    return res.status(400).json({ error: "Name is required" });
+  }
 
   const newId = items.length + 1;
 
+
   const itemWithId = {
-    id: newId,
-    ...newItem,
+    id: items.length + 1,
+    name: name,
   };
 
-  items.push(itemWithId);
+  items.push(newItem);
 
-  res.status(201).json(itemWithId);
+  res.status(201).json(newItem);
 });
 
 // export app
 export default app;
+
+
