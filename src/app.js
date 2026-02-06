@@ -38,26 +38,38 @@ app.get("/items", (req, res) => {
    res.status(200).json(items);
 });
 
-app.post("/items", (req, res) => {
+app.post("/items", (req, res, next) => {
   const { name } = req.body || {};
 
-  // validation (Day 3 style)
   if (!name) {
-    return res.status(400).json({ error: "Name is required" });
+    const error = new Error("Name is required");
+    error.status = 400;
+    return next(error);
   }
 
-  const newId = items.length + 1;
-
-
-  const itemWithId = {
+  const newItem = {
     id: items.length + 1,
-    name: name,
+    name,
   };
 
   items.push(newItem);
 
   res.status(201).json(newItem);
 });
+
+app.use((req, res) => {
+  res.status(404).json({ error: "Not found" });
+});
+
+// centralized error handling middleware Day 3
+app.use((err, req, res) => {
+  const status = err.status || 500;
+  const message = err.message || "Internal Server Error";
+
+  res.status(status).json({ error: message });
+});
+
+
 
 // export app
 export default app;
