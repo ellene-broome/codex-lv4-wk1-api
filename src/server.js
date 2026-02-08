@@ -1,3 +1,6 @@
+// server.js
+// This file is the ENTRY point for the application. It STARTS the Express server and LISTENS for incoming requests.
+
 // imports the app (Express server) from app.js
 import app from "./app.js";
 
