@@ -21,11 +21,13 @@
   },
   "homepage": "https://github.com/ellene-broome/codex-lv4-wk1-api#readme",
   "dependencies": {
+    "@prisma/client": "^6.19.2",
     "express": "^5.2.1",
     "helmet": "^8.1.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.11",
+    "prisma": "^6.19.2",
     "supertest": "^7.2.2",
     "vitest": "^4.0.18"
   }

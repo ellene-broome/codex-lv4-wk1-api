@@ -1,3 +1,5 @@
+// app.test.js
+
 // import testing tools
 // Makes fake requests to the app and checks the responses and reset the data before each test
 import { describe, it, expect, beforeEach } from "vitest";
@@ -5,11 +7,13 @@ import request from "supertest";
 import app from "../src/app.js";
 import { resetPosts } from "../src/data.js";
 
+// reset data to prevent tests (like DELETE) from affecting other tests
 beforeEach(() => {
   resetPosts();
 });
 
-
+// describe() groups related tests 
+// it() defines a single test case 
 describe("GET /items", () => {
   it("returns an array of items with status 200", async () => {
     const response = await request(app).get("/items");
