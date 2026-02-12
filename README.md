@@ -1,50 +1,30 @@
 # ContentHub API (Codex Academy Level 4)
 
-## A simple Express.js API built for Codex Academy Level 4.A Node.js + Express REST API that progressed from using in-memory data (Week 1) to a real PostgreSQL database using Supabase (Week 2).
+### A Node.js + Express REST API that progressed from using in-memory data (Week 1) to a real PostgreSQL database using Supabase (Week 2).
 
 ## What This Project Demonstrates
 ### Week 1 — API Fundamentals
-
 - REST-style routes
-
-- Middleware usage
-
-- GET and POST requests
-
+- Middleware
+- Query parameters & validation
 - JSON responses
-
 - Postman testing
-
-- Automated tests (Vitest + Supertest)
-
+- Pagination
+- Testing with Vitest + Supertest
 - Temporary in-memory data
-
 ### Week 2 — Database Integration
-
-- Connecting backend to Supabase (PostgreSQL)
-
+- Supabase PostgreSQL connection
 - Environment variables (.env)
-
 - Persistent data storage
-
-- SQL operations (SELECT, INSERT, DELETE)
-
+- SQL operations (INSERT, SELECT, UPDATE, DELETE)
 - API now returns live database records
-
 ## Tech Used
-
 - Node.js
-
 - Express
-
 - Helmet
-
 - Postman
-
 - Vitest + Supertest
-
--Supabase (PostreSQL)
-
+- Supabase (PostgreSQL)
 ## Project Structure
 ```
 src/
@@ -55,87 +35,64 @@ src/
 tests/
 
 ```
-
-##  Setup
-
+## Setup
 - Clone the repo:
-
+```
 git clone https://github.com/ellene-broome/codex-lv4-wk1-api.git
 cd codex-lv4-wk1-api
-
-
-- Install dependencies:
-
+```
+### Install dependencies:
+```
 npm install
-
-
-- Run the server:
-
-node src/server.js
-
-
+```
+## Create .env file in the project root
+```
+SUPABASE_URL=your_supabase_url
+SUPABASE_ANON_KEY=your_anon_key
+```
+- Start the server:
+  `npm run dev`
 - Server runs on:
-
+```
 http://localhost:3000
+```
+After starting the server, open http://localhost:3000/items to verify the database connection.
 
 ## Routes
-## Core Routes
+## General Routes
 | Method | Route  | Description               |
 | ------ | ------ | ------------------------- |
 | GET    | /      | Welcome message           |
 | GET    | /posts | Sample posts (memory)     |
 | GET    | /users | Sample users              |
-| GET    | /items | Database items (Supabase) |
-
-## POST /items (Week 1)
-### Creates a new item in memory
-
-Example body:
+## Items (Supabase)
+| Method | Route      | Result                   |
+| ------ | ---------- | ------------------------ |
+| GET    | /items     | List items               |
+| POST   | /items     | Create item              |
+| PUT    | /items/:id | Update item (200 or 404) |
+| DELETE | /items/:id | Delete item (204 or 404) |
+## Example POST Body
 ```
 {
-  "name": "marker"
+  "name": "marker",
+  "category": "school"
 }
 ```
-Success (201)
-```
-{
-  "id": 7,
-  "name": "marker"
-}
-```
-Error (400)
-```
-{
-  "error": "Name is required"
-}
-```
-
-
-## Database (Week 2)
-### Table Items
+## Database Table: items
 | Column     | Description                |
 | ---------- | -------------------------- |
 | id         | Auto generated primary key |
 | name       | Item name                  |
 | category   | Item category              |
 | created_at | Timestamp                  |
-
 The `/items` route now returns real database records
-
-
 ## Testing
-
 - Manual testing with Postman
 - Automated tests with Vitest + Supertest
-
 ## What I Learned
-
-- APIs act as a middle layer between client and database
-
-- Databases store persistent data
-
+- APIs connect clients to databases
+- Memory data disappears — databases persist
 - Environment variables protect secrets
-
-- SQL queries directly affect live data
-
+- SQL operations control real data
 - Backend behavior changes when switching from memory → database

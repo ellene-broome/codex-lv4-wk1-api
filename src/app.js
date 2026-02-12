@@ -1,80 +1,44 @@
 // src/app.js
+import express from "express";
+import helmet from "helmet";
 
-import express from "express"; // Express = framework for building APIs
-import helmet from "helmet"; // Helmet adds security-related HTTP headers
-import items, { posts, comments } from "./data.js"; // in-memory data arrays
+import { posts, comments } from "./data.js"; // keep Week 1 routes working
 import { supabase } from "./supabaseClient.js";
 
-// app is the Express SERVER instance
 const app = express();
 
-// app.get("/items-old", (req, res) => res.json(items));
-
-app.get("/items", async (req, res) => {
-  try {
-    const { data, error } = await supabase
-      .from("items")
-      .select("*")
-      .order("id", { ascending: true });
-
-    if (error) {
-      return res.status(500).json({ error: error.message });
-    }
-
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: "Unexpected server error" });
-  }
-});
-
-
-
-
 /* ------------------ MIDDLEWARE ------------------ */
-
-// Helmet helps PROTECTS your API by setting secure headers
 app.use(helmet());
-
-// This lets the server read JSON from request bodies (POST/PUT)
 app.use(express.json());
 
-// Extra practice: logs how long each request took
+// simple request timer log
 app.use((req, res, next) => {
   const start = Date.now();
-
-  // "finish" runs when the response has been sent
   res.on("finish", () => {
     const duration = Date.now() - start;
     console.log(`${req.method} ${req.originalUrl} - ${duration}ms`);
   });
-
-  next(); // move on to the next middleware/route
+  next();
 });
 
 /* ------------------ ROUTES ------------------ */
 
-// Root route — checks that server is alive
+// health check
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to ContentHub API" });
 });
 
-/* -------- Day 2: GET /posts with OFFSET pagination --------
-   Query params:
-   - offset: where to start in the array (ex: 0, 1, 2)
-   - limit: how many posts to return
-*/
+/* -------- Week 1: GET /posts with OFFSET pagination -------- */
 app.get("/posts", (req, res) => {
   const offset = req.query.offset ? Number(req.query.offset) : 0;
   const limit = req.query.limit ? Number(req.query.limit) : posts.length;
 
-  // validate offset/limit -  don’t slice weird values
   if (Number.isNaN(offset) || Number.isNaN(limit) || offset < 0 || limit <= 0) {
     return res.status(400).json({ error: "Invalid pagination params" });
   }
 
   const data = posts.slice(offset, offset + limit);
 
-  // Return metadata + paginated results
   return res.json({
     offset,
     limit,
@@ -83,7 +47,7 @@ app.get("/posts", (req, res) => {
   });
 });
 
-// Users route (hardcoded sample)
+// sample users
 app.get("/users", (req, res) => {
   res.json([
     { id: 1, name: "Alice" },
@@ -91,60 +55,119 @@ app.get("/users", (req, res) => {
   ]);
 });
 
-/* -------- Day 2: GET /items --------
-   Returns all items from data.js
-*/
-app.get("/items-old", (req, res) => {
-  res.status(200).json(items);
-});
+/* ------------------ ITEMS (Supabase) ------------------ */
 
-/* -------- POST /items --------
-   Adds a new item to the items array.
-   Requires: { "name": "something" } in the request body
-*/
-app.post("/items", (req, res, next) => {
-  const { name } = req.body || {};
+/* GET /items - list rows */
+app.get("/items", async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from("items")
+      .select("*")
+      .order("id", { ascending: true });
 
-  // If name missing, create an error and pass it to error middleware
-  if (!name) {
-    const error = new Error("Name is required");
-    error.status = 400;
-    return next(error);
+    if (error) return res.status(500).json({ error: error.message });
+
+    return res.status(200).json(data);
+  } catch (err) {
+    return res.status(500).json({ error: "Unexpected server error" });
   }
-
-  // Create new item (simple id logic)
-  const newItem = {
-    id: items.length + 1,
-    name,
-  };
-
-  items.push(newItem); // store it in memory
-  res.status(201).json(newItem); // 201 = created
 });
 
-/* -------- GET /posts/:id (supports includeComments) --------
-   If includeComments=true, add comments array to the response
-*/
+/* POST /items - insert row */
+app.post("/items", async (req, res) => {
+  try {
+    const { name, category } = req.body || {};
+
+    if (!name || !category) {
+      return res.status(400).json({ error: "name and category are required" });
+    }
+
+    const { data, error } = await supabase
+      .from("items")
+      .insert([{ name, category }])
+      .select("*")
+      .single();
+
+    if (error) return res.status(500).json({ error: error.message });
+
+    return res.status(201).json(data);
+  } catch (err) {
+    return res.status(500).json({ error: "Unexpected server error" });
+  }
+});
+
+/* PUT /items/:id - update row (200 or 404) */
+app.put("/items/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const { name, category } = req.body || {};
+
+    if (Number.isNaN(id) || id <= 0) {
+      return res.status(400).json({ error: "Invalid id" });
+    }
+    if (!name || !category) {
+      return res.status(400).json({ error: "name and category are required" });
+    }
+
+    const { data, error } = await supabase
+      .from("items")
+      .update({ name, category })
+      .eq("id", id)
+      .select("*");
+
+    if (error) return res.status(500).json({ error: error.message });
+
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: "Item not found" });
+    }
+
+    return res.status(200).json(data[0]);
+  } catch (err) {
+    return res.status(500).json({ error: "Unexpected server error" });
+  }
+});
+
+/* DELETE /items/:id - delete row (204 or 404) */
+app.delete("/items/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+
+    if (Number.isNaN(id) || id <= 0) {
+      return res.status(400).json({ error: "Invalid id" });
+    }
+
+    const { data, error } = await supabase
+      .from("items")
+      .delete()
+      .eq("id", id)
+      .select("id"); // so we can tell if something was deleted
+
+    if (error) return res.status(500).json({ error: error.message });
+
+    if (!data || data.length === 0) {
+      return res.status(404).json({ error: "Item not found" });
+    }
+
+    return res.status(204).send();
+  } catch (err) {
+    return res.status(500).json({ error: "Unexpected server error" });
+  }
+});
+
+/* -------- Week 1: GET /posts/:id (includeComments) -------- */
 app.get("/posts/:id", (req, res) => {
   const id = Number(req.params.id);
 
-  // validate id
   if (Number.isNaN(id) || id <= 0) {
     return res.status(400).json({ error: "Invalid ID" });
   }
 
-  // find the post
   const post = posts.find((p) => p.id === id);
+  if (!post) return res.status(404).json({ error: "Post not found" });
 
-  if (!post) {
-    return res.status(404).json({ error: "Post not found" });
-  }
-
-  // query param must literally be "true"
   const includeComments = req.query.includeComments === "true";
 
   if (includeComments) {
-    // only comments whose postId matches this post
     const postComments = comments.filter((c) => c.postId === id);
     return res.json({ ...post, comments: postComments });
   }
@@ -152,9 +175,7 @@ app.get("/posts/:id", (req, res) => {
   return res.json(post);
 });
 
-/* -------- DELETE /posts/:id --------
-   Deletes a post from the posts array and returns the deleted post
-*/
+/* -------- Week 1: DELETE /posts/:id -------- */
 app.delete("/posts/:id", (req, res) => {
   const id = Number(req.params.id);
 
@@ -163,28 +184,21 @@ app.delete("/posts/:id", (req, res) => {
   }
 
   const index = posts.findIndex((p) => p.id === id);
+  if (index === -1) return res.status(404).json({ error: "Post not found" });
 
-  if (index === -1) {
-    return res.status(404).json({ error: "Post not found" });
-  }
-
-  // remove the post at that index and return it
   const deleted = posts.splice(index, 1)[0];
   return res.status(200).json(deleted);
 });
 
 /* ------------------ FALLBACK + ERROR HANDLING ------------------ */
-
-// If no route matched, return 404 JSON
 app.use((req, res) => {
   res.status(404).json({ error: "Not found" });
 });
 
-// Central error handler (catches next(error))
-app.use((err, req, res, next) => {
+app.use((err, _req, res,) => {
   const status = err.status || 500;
   const message = err.message || "Internal Server Error";
   res.status(status).json({ error: message });
 });
 
-export default app; // exported so server.js and tests can use it
+export default app;
