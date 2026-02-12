@@ -1,10 +1,34 @@
 // src/app.js
+
 import express from "express"; // Express = framework for building APIs
 import helmet from "helmet"; // Helmet adds security-related HTTP headers
 import items, { posts, comments } from "./data.js"; // in-memory data arrays
+import { supabase } from "./supabaseClient.js";
 
 // app is the Express SERVER instance
 const app = express();
+
+// app.get("/items-old", (req, res) => res.json(items));
+
+app.get("/items", async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from("items")
+      .select("*")
+      .order("id", { ascending: true });
+
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: "Unexpected server error" });
+  }
+});
+
+
+
 
 /* ------------------ MIDDLEWARE ------------------ */
 
@@ -70,7 +94,7 @@ app.get("/users", (req, res) => {
 /* -------- Day 2: GET /items --------
    Returns all items from data.js
 */
-app.get("/items", (req, res) => {
+app.get("/items-old", (req, res) => {
   res.status(200).json(items);
 });
 

@@ -1,106 +1,141 @@
-## ContentHub API (Level 4 — Week 1)
+# ContentHub API (Codex Academy Level 4)
 
-A simple Express.js API built for Codex Academy Level 4.
+## A simple Express.js API built for Codex Academy Level 4.A Node.js + Express REST API that progressed from using in-memory data (Week 1) to a real PostgreSQL database using Supabase (Week 2).
 
-### This project practices:
+## What This Project Demonstrates
+### Week 1 — API Fundamentals
 
-Building REST-style routes
+- REST-style routes
 
-Using middleware
+- Middleware usage
 
-Handling GET and POST requests
+- GET and POST requests
 
-Returning JSON responses
+- JSON responses
 
-Testing with Postman
+- Postman testing
 
-### 🚀 Tech Used
+- Automated tests (Vitest + Supertest)
 
-Node.js
+- Temporary in-memory data
 
-Express
+### Week 2 — Database Integration
 
-Helmet
+- Connecting backend to Supabase (PostgreSQL)
 
-Postman
+- Environment variables (.env)
 
-Vitest + Supertest
+- Persistent data storage
 
-### 📂 Project Structure
+- SQL operations (SELECT, INSERT, DELETE)
+
+- API now returns live database records
+
+## Tech Used
+
+- Node.js
+
+- Express
+
+- Helmet
+
+- Postman
+
+- Vitest + Supertest
+
+-Supabase (PostreSQL)
+
+## Project Structure
 ```
 src/
-  app.js
-  server.js
-  data.js
+  app.js          - Express routes
+  server.js       - Server entry point
+  data.js         - Week 1 in-memory data
+  supabaseClient.js # Database connection
 tests/
+
 ```
 
-### ⚙️ Setup
+##  Setup
 
-Clone the repo:
+- Clone the repo:
 
 git clone https://github.com/ellene-broome/codex-lv4-wk1-api.git
 cd codex-lv4-wk1-api
 
 
-Install dependencies:
+- Install dependencies:
 
 npm install
 
 
-Run the server:
+- Run the server:
 
 node src/server.js
 
 
-Server runs on:
+- Server runs on:
 
 http://localhost:3000
 
-### 📌 Routes
-GET /
+## Routes
+## Core Routes
+| Method | Route  | Description               |
+| ------ | ------ | ------------------------- |
+| GET    | /      | Welcome message           |
+| GET    | /posts | Sample posts (memory)     |
+| GET    | /users | Sample users              |
+| GET    | /items | Database items (Supabase) |
 
-Returns welcome message.
-
-GET /posts
-
-Returns sample posts.
-
-GET /users
-
-Returns sample users.
-
-GET /items
-
-Returns list of items.
-
-POST /items
-
-Creates a new item.
+## POST /items (Week 1)
+### Creates a new item in memory
 
 Example body:
-
+```
 {
   "name": "marker"
 }
-
-
-Success response (201):
-
+```
+Success (201)
+```
 {
   "id": 7,
   "name": "marker"
 }
-
-
-Error response (400):
-
+```
+Error (400)
+```
 {
   "error": "Name is required"
 }
+```
 
-### 🧪 Testing
 
-All routes tested using Postman.
+## Database (Week 2)
+### Table Items
+| Column     | Description                |
+| ---------- | -------------------------- |
+| id         | Auto generated primary key |
+| name       | Item name                  |
+| category   | Item category              |
+| created_at | Timestamp                  |
 
-Tests included with Vitest + Supertest.
+The `/items` route now returns real database records
+
+
+## Testing
+
+- Manual testing with Postman
+- Automated tests with Vitest + Supertest
+
+## What I Learned
+
+- APIs act as a middle layer between client and database
+
+- Databases store persistent data
+
+- Environment variables protect secrets
+
+- SQL queries directly affect live data
+
+- Backend behavior changes when switching from memory → database

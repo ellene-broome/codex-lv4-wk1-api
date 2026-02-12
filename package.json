@@ -22,6 +22,8 @@
   "homepage": "https://github.com/ellene-broome/codex-lv4-wk1-api#readme",
   "dependencies": {
     "@prisma/client": "^6.19.2",
+    "@supabase/supabase-js": "^2.95.3",
+    "dotenv": "^17.2.4",
     "express": "^5.2.1",
     "helmet": "^8.1.0"
   },
