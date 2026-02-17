@@ -96,3 +96,5 @@ The `/items` route now returns real database records
 - Environment variables protect secrets
 - SQL operations control real data
 - Backend behavior changes when switching from memory → database
+  ## cors modification
+  The API only accepts cross-origin requests from the frontend origin defined in CLIENT_ORIGIN.
