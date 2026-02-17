@@ -12,6 +12,16 @@ beforeEach(() => {
   resetPosts();
 });
 
+// basic test to verify the testing setup works and the app is running
+describe("API health check", () => {
+  it("GET /health returns ok", async () => {
+    const res = await request(app).get("/health");
+
+    expect(res.status).toBe(200);
+    expect(res.body.ok).toBe(true);
+    expect(res.body.data.status).toBe("ok");
+  });
+});
 // describe() groups related tests 
 // it() defines a single test case 
 describe("GET /items", () => {

@@ -32,6 +32,8 @@ app.use((req, res, next) => {
   next();
 });
 
+
+
 // JSON parser AFTER the guard
 app.use(express.json());
 
